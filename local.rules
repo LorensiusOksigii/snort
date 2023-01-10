@@ -1,0 +1,23 @@
+# $Id: local.rules,v 1.11 2004/07/23 20:15:44 bmc Exp $
+# ----------------
+# LOCAL RULES
+# ----------------
+# This file intentionally does not come with signatures.  Put your local
+# additions here.
+
+# nmap tcp scan
+aletr tcp any any -> $HOME_NET any (msg:"NMAP scan detected"; sid:100006; rev:1)
+
+# SSH brute-force rules
+alert tcp any any -> $HOME_NET 22 (msg:"Potential SSH Brute Force Attack";flow:to_server; flags:A; threshold:type threshold, track by_src, count 15, seconds 60;classtype:attempted-dos;sid:1000020;rev:1;)
+
+# brute-force rules
+# alert tcp $HOME_NET 22 -> any any (msg:"SSH Failed login"; content:"Permission denied, please try again."; sid:100003; rev:1;)
+
+# ddos rules
+# ICMP flood
+alert icmp any any -> $HOME_NET any (msg:"ICMP flood detected"; sid:1000001; rev:1; classtype:icmp-event; detection_filter:track by_dst, count 500, seconds 3;)
+
+# UDP flood
+alert udp any any -> $HOME_NET any (msg:"UDP flood detected"; sid:50003; rev:1; detection_filter:track by_dst, count 500, seconds 3;)
+
